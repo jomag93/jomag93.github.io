@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMT Date Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #1a1a1a;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .calculator-section {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid #333333;
+        }
+        
+        .section-title {
+            color: #1a1a1a;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title::before {
+            content: '📅';
+            font-size: 1.2rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333333;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #666666;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f8f8;
+            color: #1a1a1a;
+        }
+        
+        .form-group input:focus {
+            outline: none;
+            border-color: #000000;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .date-input-container {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+        
+        .date-input-container input {
+            flex: 1;
+        }
+        
+        .today-btn {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .today-btn:hover {
+            background: #38a169;
+            transform: translateY(-1px);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #1a1a1a, #000000);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+            border: 1px solid #333333;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            background: #000000;
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .clear-btn {
+            background: #666666;
+            margin-top: 10px;
+            border: 1px solid #999999;
+        }
+        
+        .clear-btn:hover {
+            background: #333333;
+            box-shadow: 0 8px 25px rgba(51, 51, 51, 0.3);
+        }
+        
+        .results {
+            margin-top: 20px;
+            padding: 0;
+        }
+        
+        .results h3 {
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+        
+        .result-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+        }
+        
+        .result-label {
+            font-weight: 500;
+            color: #333333;
+            flex: 0 0 auto;
+            margin-right: 15px;
+        }
+        
+        .result-value {
+            font-size: 1rem;
+            color: #1a1a1a;
+            text-align: right;
+            flex: 1;
+        }
+        
+        .milestone-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .milestone-item:last-child {
+            border-bottom: none;
+        }
+        
+        .milestone-item.today {
+            background-color: #f0f0f0;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #1a1a1a;
+            margin: 5px 0;
+        }
+        
+        .milestone-item.past {
+            opacity: 0.5;
+            color: #666666;
+        }
+        
+        .milestone-day {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .milestone-date {
+            color: #666666;
+            text-align: right;
+        }
+        
+        .milestone-description {
+            font-size: 0.85rem;
+            color: #999999;
+            margin-top: 2px;
+        }
+        
+        .today-indicator {
+            font-weight: bold;
+            color: #000000;
+            font-size: 0.8rem;
+            margin-left: 10px;
+            background: #e0e0e0;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>BMT Date Calculator</h1>
+        </div>
+        
+        <div class="calculator-section">
+            <h2 class="section-title">Transplant Date Calculator</h2>
+            
+            <div class="form-group">
+                <label for="transplantDate">Transplant Date (Day 0):</label>
+                <div class="date-input-container">
+                    <input type="date" id="transplantDate" />
+                    <button type="button" class="today-btn" onclick="setTodayDate()">Today</button>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="showMilestones()">Calculate Milestones</button>
+            <button class="btn" onclick="showDaysSince()">Days Since Transplant</button>
+            <button class="btn clear-btn" onclick="clearAll()">Clear Results</button>
+            
+            <div id="results"></div>
+        </div>
+        
+        <div class="calculator-section">
+            <h2 class="section-title">Reverse Calculator</h2>
+            
+            <div class="form-group">
+                <label for="daysSince">Days Since Transplant:</label>
+                <input type="number" id="daysSince" placeholder="Enter number of days" />
+            </div>
+            
+            <div class="form-group">
+                <label for="currentDate">Date:</label>
+                <div class="date-input-container">
+                    <input type="date" id="currentDate" />
+                    <button type="button" class="today-btn" onclick="setCurrentDate()">Today</button>
+                </div>
+            </div>
+            
+            <button class="btn" onclick="calculateTransplantDate()">Calculate Transplant Date</button>
+            <button class="btn clear-btn" onclick="clearReverseResults()">Clear Results</button>
+            
+            <div id="reverseResults"></div>
+        </div>
+        
+        <div class="calculator-section">
+            <h2 class="section-title">Date Calculator</h2>
+            
+            <div class="form-group">
+                <label for="baseTransplantDate">Transplant Date:</label>
+                <div class="date-input-container">
+                    <input type="date" id="baseTransplantDate" />
+                    <button type="button" class="today-btn" onclick="setBaseTransplantDate()">Today</button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="daysToAdd">Days After Transplant:</label>
+                <input type="number" id="daysToAdd" placeholder="Enter number of days" />
+            </div>
+            
+            <button class="btn" onclick="calculateFutureDate()">Calculate Date</button>
+            <button class="btn clear-btn" onclick="clearDateResults()">Clear Results</button>
+            
+            <div id="dateResults"></div>
+        </div>
+    </div>
+    
+    <script>
+        function setTodayDate() {
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = String(today.getMonth() + 1).padStart(2, '0');
+            var day = String(today.getDate()).padStart(2, '0');
+            var dateString = year + '-' + month + '-' + day;
+            document.getElementById('transplantDate').value = dateString;
+        }
+        
+        function formatDate(date) {
+            var options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            return date.toLocaleDateString('en-GB', options);
+        }
+        
+        function formatDateShort(date) {
+            var options = { day: 'numeric', month: 'short', year: 'numeric' };
+            return date.toLocaleDateString('en-GB', options);
+        }
+        
+        function addDays(date, days) {
+            var result = new Date(date);
+            result.setDate(result.getDate() + days);
+            return result;
+        }
+        
+        function daysBetween(date1, date2) {
+            var oneDay = 24 * 60 * 60 * 1000;
+            return Math.round((date2 - date1) / oneDay);
+        }
+        
+        function showDaysSince() {
+            var dateInput = document.getElementById('transplantDate').value;
+            if (!dateInput) {
+                alert('Please enter a transplant date');
+                return;
+            }
+            
+            var transplantDate = new Date(dateInput);
+            var today = new Date();
+            var daysSince = daysBetween(transplantDate, today);
+            
+            var html = '<div class="results">';
+            html += '<h3>Days Since Transplant</h3>';
+            html += '<div class="result-item">';
+            html += '<div class="result-label">Transplant Date:</div>';
+            html += '<div class="result-value">' + formatDate(transplantDate) + '</div>';
+            html += '</div>';
+            html += '<div class="result-item">';
+            html += '<div class="result-label">Today:</div>';
+            html += '<div class="result-value">' + formatDate(today) + '</div>';
+            html += '</div>';
+            html += '<div class="result-item">';
+            html += '<div class="result-label">Days Since Transplant:</div>';
+            html += '<div class="result-value">Day ' + (daysSince >= 0 ? '+' : '') + daysSince + '</div>';
+            html += '</div>';
+            
+            if (daysSince < 0) {
+                html += '<div class="result-item">';
+                html += '<div class="result-label">Note:</div>';
+                html += '<div class="result-value">Transplant date is in the future</div>';
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            
+            document.getElementById('results').innerHTML = html;
+        }
+        
+        function showMilestones() {
+            var dateInput = document.getElementById('transplantDate').value;
+            if (!dateInput) {
+                alert('Please enter a transplant date');
+                return;
+            }
+            
+            var transplantDate = new Date(dateInput);
+            var today = new Date();
+            
+            var milestones = [
+                { day: 0, label: 'Transplant Day', description: 'Day of transplant' },
+                { day: 7, label: 'Day +7', description: 'Week 1 post-transplant' },
+                { day: 14, label: 'Day +14', description: 'Week 2 post-transplant' },
+                { day: 21, label: 'Day +21', description: 'Week 3 post-transplant' },
+                { day: 30, label: 'Day +30', description: '1 Month post-transplant' },
+                { day: 60, label: 'Day +60', description: '2 Months post-transplant' },
+                { day: 90, label: 'Day +90', description: '3 Months post-transplant' },
+                { day: 100, label: 'Day +100', description: '100 Day milestone' },
+                { day: 180, label: 'Day +180', description: '6 Months post-transplant' },
+                { day: 365, label: 'Day +365', description: '1 Year post-transplant' },
+                { day: 730, label: 'Day +730', description: '2 Years post-transplant' }
+            ];
+            
+            var html = '<div class="results">';
+            html += '<h3>BMT Milestones from ' + formatDate(transplantDate) + '</h3>';
+            
+            for (var i = 0; i < milestones.length; i++) {
+                var milestone = milestones[i];
+                var milestoneDate = addDays(transplantDate, milestone.day);
+                var isToday = today.toDateString() === milestoneDate.toDateString();
+                var isPast = milestoneDate < today && !isToday;
+                
+                var cssClass = 'milestone-item';
+                if (isToday) cssClass += ' today';
+                if (isPast) cssClass += ' past';
+                
+                html += '<div class="' + cssClass + '">';
+                html += '<div>';
+                html += '<div class="milestone-day">' + milestone.label + '</div>';
+                html += '<div class="milestone-description">' + milestone.description + '</div>';
+                html += '</div>';
+                html += '<div>';
+                html += '<div class="milestone-date">' + formatDateShort(milestoneDate) + '</div>';
+                if (isToday) {
+                    html += '<span class="today-indicator">TODAY</span>';
+                }
+                html += '</div>';
+                html += '</div>';
+            }
+            
+            html += '</div>';
+            
+            document.getElementById('results').innerHTML = html;
+        }
+        
+        function clearAll() {
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('transplantDate').value = '';
+        }
+        
+        function setCurrentDate() {
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = String(today.getMonth() + 1).padStart(2, '0');
+            var day = String(today.getDate()).padStart(2, '0');
+            var dateString = year + '-' + month + '-' + day;
+            document.getElementById('currentDate').value = dateString;
+        }
+        
+        function calculateTransplantDate() {
+            var daysSinceInput = document.getElementById('daysSince').value;
+            var currentDateInput = document.getElementById('currentDate').value;
+            
+            if (!daysSinceInput || !currentDateInput) {
+                alert('Please enter both the days since transplant and current date');
+                return;
+            }
+            
+            var daysSince = parseInt(daysSinceInput);
+            var currentDate = new Date(currentDateInput);
+            var transplantDate = new Date(currentDate);
+            transplantDate.setDate(transplantDate.getDate() - daysSince);
+            
+            var html = '<div class="results">';
+            html += '<h3>Calculated Transplant Date</h3>';
+            html += '<div class="result-item">';
+            html += '<div class="result-label">Days Since Transplant:</div>';
+            html += '<div class="result-value">Day +' + daysSince + '</div>';
+            html += '</div>';
+            html += '<div class="result-item">';
+            html += '<div class="result-label">Current Date:</div>';
+            html += '<div class="result-value">' + formatDate(currentDate) + '</div>';
+            html += '</div>';
+            html += '<div class="result-item">';
+            html += '<div class="result-label">Calculated Transplant Date:</div>';
+            html += '<div class="result-value">' + formatDate(transplantDate) + '</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            document.getElementById('reverseResults').innerHTML = html;
+        }
+        
+        function clearReverseResults() {
+            document.getElementById('reverseResults').innerHTML = '';
+            document.getElementById('daysSince').value = '';
+            document.getElementById('currentDate').value = '';
+        }
+        
+        function setBaseTransplantDate() {
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = String(today.getMonth() + 1).padStart(2, '0');
+            var day = String(today.getDate()).padStart(2, '0');
+            var dateString = year + '-' + month + '-' + day;
+            document.getElementById('baseTransplantDate').value = dateString;
+        }
+        
+        function calculateFutureDate() {
+            var transplantDateInput = document.getElementById('baseTransplantDate').value;
+            var daysToAddInput = document.getElementById('daysToAdd').value;
+            
+            if (!transplantDateInput || !daysToAddInput) {
+                alert('Please enter both the transplant date and days after transplant');
+                return;
+            }
+            
+            var transplantDate = new Date(transplantDateInput);
+            var daysToAdd = parseInt(daysToAddInput);
+            var targetDate = addDays(transplantDate, daysToAdd);
+            
+            var html = '<div class="results">';
+            html += '<h3>Calculated Date</h3>';
+            html += '<div class="result-item">';
+            html += '<div class="result-label">Transplant Date:</div>';
+            html += '<div class="result-value">' + formatDate(transplantDate) + '</div>';
+            html += '</div>';
+            html += '<div class="result-item">';
+            html += '<div class="result-label">Days After Transplant:</div>';
+            html += '<div class="result-value">Day +' + daysToAdd + '</div>';
+            html += '</div>';
+            html += '<div class="result-item">';
+            html += '<div class="result-label">Target Date:</div>';
+            html += '<div class="result-value">' + formatDate(targetDate) + '</div>';
+            html += '</div>';
+            html += '</div>';
+            
+            document.getElementById('dateResults').innerHTML = html;
+        }
+        
+        function clearDateResults() {
+            document.getElementById('dateResults').innerHTML = '';
+            document.getElementById('baseTransplantDate').value = '';
+            document.getElementById('daysToAdd').value = '';
+        }
+    </script>
+</body>
+</html>
